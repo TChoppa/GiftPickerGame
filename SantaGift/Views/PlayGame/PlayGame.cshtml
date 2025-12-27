@@ -1,0 +1,643 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Play Page";
+}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+@{
+    ViewData["Title"] = "Play Page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        /* =========================
+                   BACKGROUND
+                   ========================= */
+        /* body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 25%, rgba(40,70,120,0.45), transparent 40%), radial-gradient(circle at 80% 30%, rgba(220,235,255,0.2), transparent 45%), radial-gradient(circle at 70% 85%, rgba(60,100,160,0.4), transparent 45%), linear-gradient(135deg, #0a1a2f, #152a45, #1f3a60);
+            background-attachment: fixed;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        } */
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #1f2937;
+            background: radial-gradient(circle at 20% 20%, rgba(186, 230, 253, 0.45), transparent 40%), radial-gradient(circle at 80% 30%, rgba(199, 210, 254, 0.45), transparent 50%), radial-gradient(circle at 60% 80%, rgba(254, 215, 170, 0.35), transparent 50%), linear-gradient(135deg, #f8fafc, #eef2f7, #f1f5f9);
+            background-attachment: fixed;
+        }
+
+        /* =========================
+           GLASSY SHINE FOR PLAY TEXT
+           ========================= */
+       .play-text {
+            position: relative;
+            display: inline-block;
+            overflow: hidden; /* required for shine */
+        }
+            /* Shine layer */
+       .play-text::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient( 120deg, transparent 20%, rgba(255,255,255,0.85), transparent 80% );
+                mix-blend-mode: overlay; /* keeps original colors */
+                opacity: 0.65;
+                pointer-events: none;
+                animation: playTextShine 4s ease-in-out infinite;
+            }
+
+       .play-text {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 16px 30px;
+            border-radius: 16px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            color: #fff;
+            transition: all 0.35s ease;
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.28);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.45), inset 0 0 18px rgba(255,255,255,0.25);
+        }
+        @@keyframes playTextShine {
+            0%
+
+        {
+            transform: translateX(-120%);
+        }
+
+        45% {
+            transform: translateX(120%);
+        }
+
+        100% {
+            transform: translateX(120%);
+        }
+
+        }
+
+        .play-text span {
+            text-shadow: 0 0 5px currentColor, 0 0 15px currentColor;
+        }
+
+        /* =========================
+                   GLASS CORE
+                   ========================= */
+        .glass {
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45), inset 0 0 25px rgba(255,255,255,0.22);
+            position: relative;
+        }
+
+        .glass::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: linear-gradient( 120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.08) 35%, rgba(255,255,255,0.02) );
+                pointer-events: none;
+            }
+
+        /* =========================
+                   PLAY TEXT
+                   ========================= */
+   
+
+     
+
+        .p {
+            color: #ff4d4d;
+        }
+
+        .l {
+            color: #00bfff;
+        }
+
+        .a {
+            color: #ffd700;
+        }
+
+        .y {
+            color: #00ff99;
+        }
+
+        /* =========================
+                   PLAY BUTTON
+                   ========================= */
+        .play-btn {
+            width: 20vw;
+            height: 20vw;
+            max-width: 220px;
+            max-height: 220px;
+            min-width: 120px;
+            min-height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.16);
+            backdrop-filter: blur(26px) saturate(160%);
+            -webkit-backdrop-filter: blur(26px) saturate(160%);
+            border: 1px solid rgba(255,255,255,0.35);
+            box-shadow: 0 22px 60px rgba(0,0,0,0.5), inset 0 0 22px rgba(255,255,255,0.35);
+            transition: all 0.35s ease;
+            color: yellow;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .play-btn i {
+                font-size: clamp(2.5rem, 6vw, 4rem);
+                text-shadow: 0 0 10px rgba(255,255,255,0.7);
+            }
+
+        .play-btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 30px 90px rgba(0,0,0,0.6), inset 0 0 30px rgba(255,255,255,0.45);
+            }
+
+        /* =========================
+                   BUTTONS & MESSAGE
+                   ========================= */
+    
+        #btnCreate, 
+        #btnAdd,
+        #listParticipants {
+            min-height: 1.4em;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.28);
+            border-radius: 14px;
+            padding: 10px 18px;
+            box-shadow: 0 14px 35px rgba(0,0,0,0.35), inset 0 0 14px rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+
+            #playMessage.show,
+            #btnCreate.show,
+            #btnAdd.show,
+            #listParticipants.show {
+                opacity: 1;
+                transition: opacity 0.4s ease;
+            }
+
+        /* =========================
+                   MODAL
+                   ========================= */
+        .modal-content {
+            position: relative; /* required for shine overlay */
+            background: rgba(255, 255, 255, 0.14); /* semi-transparent frosted glass */
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 22px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.1), inset 0 0 30px rgba(255,255,255,0.22);
+        }     
+            /* Shine overlay for premium glass effect */
+        .modal-content::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: linear-gradient( 120deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05) 35%, rgba(255, 255, 255, 0.02) );
+                pointer-events: none;
+            }
+
+
+
+        /* =========================
+           GLOW ONLY FOR SELECTED BUTTONS
+           ========================= */
+        .glow-btn {
+            transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+        }
+
+        .glow-btn:hover {
+                transform: translateY(-2px) scale(1.05);
+                border-color: rgba(100,180,255,0.9);
+                box-shadow: 0 0 20px rgba(100,180,255,0.8), /* glow */
+                0 18px 55px rgba(0,0,0,0.5), inset 0 0 25px rgba(255,255,255,0.35);
+            }
+
+      
+    
+
+            /* Table header */
+            #modalUsersTable {
+                width: 100%;
+                background: rgba(255, 255, 255, 0.12); /* frosted glass background */
+                backdrop-filter: blur(20px) saturate(180%);
+                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 12px;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 15px rgba(255,255,255,0.15);
+                overflow: hidden;
+                text-align: center; /* horizontally center text */
+            }
+
+            /* Table header */
+            #modalUsersTable thead {
+                background: rgba(255, 255, 255, 0.18);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border-bottom: 1px solid rgba(255,255,255,0.25);
+            }
+
+            #modalUsersTable thead th {
+                    font-weight: bold; /* Bold header */
+                    color: black; /* Header text black */
+                    text-align: center; /* Center header text */
+                    vertical-align: middle; /* Vertically center header text */
+                }
+
+            /* Table rows */
+            #modalUsersTable tbody tr {
+                background: rgba(255,255,255,0.08);
+                transition: all 0.3s ease;
+            }
+
+                /* Row hover glow */
+             #modalUsersTable tbody tr:hover {
+                    background: rgba(255,255,255,0.15);
+                    box-shadow: 0 0 15px rgba(255,255,255,0.25);
+                }
+
+            /* Table cells */
+            #modalUsersTable td {
+                color: black; /* Row text black */
+                text-align: center; /* Center cell text horizontally */
+                vertical-align: middle; /* Center cell text vertically */
+                border: none;
+            }
+
+            .modal-header {
+                display: flex;
+                justify-content: center; /* centers horizontally */
+                align-items: center; /* centers vertically */
+                position: relative; /* keep button positioning intact */           
+                border-bottom: 1px solid rgba(255,255,255,0.25);
+            }
+            /* Move the close button to the right without affecting the centering */
+            .modal-header .btn-close {
+                position: absolute;
+                right: 15px;
+            }
+        /* =========================
+           PLAY MESSAGE – TEXT ONLY NEON
+           ========================= */
+        #playMessage {
+            display: inline-block;
+            margin-top: 12px;
+            color: #ff4d4d;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            /* Neon glow (text only) */
+            text-shadow: 0 0 4px rgba(255, 80, 80, 0.9), 0 0 10px rgba(255, 80, 80, 0.75), 0 0 18px rgba(255, 80, 80, 0.55);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+            /* Show state */
+            #playMessage.show {
+                opacity: 1;
+            }
+
+        .btn-add {
+            color: #1fbf75; /* vivid but professional green */
+            font-weight: 600;
+        }
+
+        /* Bright yellow – not dull, not neon */
+        .btn-sponsor {
+            color: #f4c430; /* rich golden yellow */
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="d-flex flex-column align-items-center">
+
+            <h3 class="play-text">
+                <span class="p">P</span>
+                <span class="l">L</span>
+                <span class="a">A</span>
+                <span class="y">Y</span>
+            </h3>
+
+            <br />
+
+            <a href="@Url.Action("Dashboard", "Dashboard")"
+               id="playButton"
+               class="play-btn d-flex justify-content-center align-items-center glass">
+                <i class="fas fa-play"></i>
+            </a>
+
+            <br />
+
+            <span id="playMessage" class="mt-3 text-danger"></span><br />
+
+            <button id="btnCreate" class="glass glow-btn" style="color:deepskyblue">Create Team</button><br />
+
+            <div>
+                <button id="btnAdd" class="glass glow-btn me-2 btn-add " style="color:deepskyblue">Add / View Participants</button>
+                <button id="listParticipants" class="glass glow-btn btn-sponsor " style="color:lightgreen">Sponsors</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="participantsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg rounded-4">
+
+                <div class="modal-header  text-white">
+                    <h5 class="modal-title  m-0" style="color:lightgreen">PARTICIPANTS</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-hover" id="modalUsersTable">
+                        <thead>
+                            <tr>
+                                <th>Sponser</th>
+                                <th>Picker</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <div id="playMessage" class="text-center text-danger "></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+@* @await Html.PartialAsync("~/Views/Dashboard/Dashboard.cshtml")
+ *@
+@section Scripts {
+    <script>
+
+         $(document).ready(function () {
+             debugger;
+        var isUser = "@(Context.Session.GetString("isUser") ?? "false")".toLowerCase(); 
+        if (isUser === "true") 
+        { 
+            $("#btnCreate").hide();
+            $("#btnAdd").hide();
+            $("#listParticipants").hide();
+            $("#playMessage").hide();
+
+         }
+        function GetParticipants() {
+            $("#modalUsersTable tbody").empty();
+            $("#playMessage").text("");
+
+            $.ajax({
+                url: "/Dashboard/GetGiftSponsers",
+                type: "GET",
+                success: function (response) {
+
+                    if (response.success === false) {
+                        $("#playMessage").text(response.message + " Kindly Create Your Team to Play");
+                        return;
+                    }
+
+                    $.each(response, function (i, user) {
+                        $("#modalUsersTable tbody").append(
+                            `<tr data-id="${user.id}">
+                                <td>${user.sponser}</td>
+                                <td>${user.picker}</td>
+                                <td>
+                               <button class="btn btn-sm btn-outline-danger deleteBtn">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                            </tr>`
+                        );
+                    });
+                },
+                error: function () {
+                    $("#playMessage").text("Error loading participants");
+                }
+            });
+        }
+
+        // OPEN MODAL
+        $("#listParticipants").on("click", function (e) {
+            e.preventDefault();
+            const modal = new bootstrap.Modal(document.getElementById("participantsModal"));
+            modal.show();
+            GetParticipants();
+        });
+
+           
+         $.get("/Dashboard/GetParticipants", function (response)
+            {        
+                 if (response && response.length >= 1)
+                 {
+                     $("#btnCreate").hide();
+                     $("#btnAdd").addClass("show");
+                     $("#listParticipants").addClass("show");
+
+                 }
+                else
+                {
+                 $("#playMessage").text("Kindly create your team to play.").addClass("show");
+                 $("#btnCreate").addClass("show");
+
+                }
+            });
+            
+         });
+
+         $("#modalUsersTable").on("click", ".deleteBtn", function () {
+            debugger;
+            let row = $(this).closest("tr");
+            let id = row.data("id");
+             let delName = row.find("td:first").text().trim();
+
+
+
+            $.post("/Dashboard/DeleteSponser", { id }, function (res) {
+                if (res.success)
+                {
+
+                    row.remove();
+                }
+                else alert(res.message);
+            });
+
+        });
+         function GetParticipantsView()
+         {
+              $.get("/Dashboard/GetParticipantsView", function (response)
+            {
+                debugger;
+                 if (response && response.length == 0)
+                 {
+                     $("#playMessage").text("Game has been Completed").addClass("show");
+                     return;
+                 }               
+            });
+         }
+
+        $("#playButton").click(function (e) {
+            e.preventDefault(); // stop navigation
+
+            // First call: GetParticipantsView
+            $.get("/Dashboard/GetParticipantsView", function (responseView) {
+                debugger;
+                if (responseView && responseView.length === 0) {
+                    $("#playMessage").show();
+                    $("#playMessage").text("Game has been Completed").addClass("show");
+                    return; // stop here if game is completed
+                }
+
+                // Second call: only runs if game not completed
+                $.get("/Dashboard/GetParticipants", function (response) {
+                    GetParticipantsView(); // refresh view
+
+                    if (response && response.length >= 1) {
+                        window.location.href = "/PlayGame/SpinWheel";
+                    } else {
+                        $("#playMessage").text("Kindly create your team to play.").addClass("show");
+                        $("#btnCreate").addClass("show");
+                    }
+                });
+            });
+        });
+
+
+        $("#btnCreate").click(function () {
+             window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+         });
+          $("#btnAdd").click(function () {
+             window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+         });
+    </script>
+
+}
+
+
+
+@* <style>
+
+    .play-text {
+        font-size: 1.5rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        font-size: 2.5rem;
+        font-weight: 400;
+        color: #00ff99;
+        text-shadow: 0 0 5px #00ff99, 0 0 15px #00ff99;
+    }
+
+    /* Individual colors */
+    .play-text span {
+        text-shadow: 0 0 5px currentColor, 0 0 15px currentColor;
+    }
+
+    .p {
+        color: #ff4d4d;
+    }
+    /* Red */
+    .l {
+        color: #00bfff;
+    }
+    /* Blue */
+    .a {
+        color: #ffd700;
+    }
+    /* Gold */
+    .y {
+        color: #00ff99;
+    }
+    /* Green */
+
+    #playMessage, #btnCreate, #btnAdd , #listParticipants {
+        min-height: 1.4em;
+        font-size: 1.1rem;
+        font-weight: 500;
+        text-align: center;
+        opacity: 0;
+    }
+
+        #playMessage.show {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        #btnCreate.show, #btnAdd.show, #listParticipants.show {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+
+
+    .play-btn {
+        width: 20vw;
+        height: 20vw;
+        max-width: 220px;
+        max-height: 220px;
+        min-width: 120px;
+        min-height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .play-btn i {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 20px 55px rgba(0,0,0,0.45);
+        }
+</style>
+ *@
+

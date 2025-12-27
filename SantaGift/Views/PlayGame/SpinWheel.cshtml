@@ -1,0 +1,449 @@
+﻿@{
+    ViewData["Title"] = "Gift Picker Deluxe";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #1f2937;
+            background: radial-gradient(circle at 20% 20%, rgba(186, 230, 253, 0.45), transparent 40%), radial-gradient(circle at 80% 30%, rgba(199, 210, 254, 0.45), transparent 50%), radial-gradient(circle at 60% 80%, rgba(254, 215, 170, 0.35), transparent 50%), linear-gradient(135deg, #f8fafc, #eef2f7, #f1f5f9);
+            background-attachment: fixed;
+        }
+
+       
+
+
+
+        .page-center {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Razor-safe keyframes */
+        @@keyframes floatBlink {
+            0%, 100% {
+                transform: translateY(0);
+                text-shadow: 0 0 15px lightblue;
+            }
+
+            50% {
+                transform: translateY(-6px);
+                text-shadow: 0 0 30px orange;
+            }
+        }
+
+        @@keyframes arrowPulse {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.15);
+            }
+        }
+
+        @@keyframes winnerGlow {
+            0%, 100% {
+                text-shadow: 0 0 20px gold;
+            }
+
+            50% {
+                text-shadow: 0 0 40px orange;
+            }
+        }
+
+        #Name {
+            font-size: 1.4rem; /* smaller, more professional size */
+            font-weight: 600; /* semi-bold, not too heavy */
+            color: #2c3e50; /* dark slate for readability */
+            background: linear-gradient(90deg, #e0e0e0, #f5f5f5); /* subtle gray gradient */
+            padding: 6px 12px; /* lighter padding */
+            border-radius: 6px; /* softer corners */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* lighter shadow */
+            display: inline-block;
+            opacity: 0.9; /* slight transparency for elegance */
+        }
+
+        @@keyframes sparkle {
+            0% {
+                text-shadow: 0 0 5px gold;
+            }
+
+            50% {
+                text-shadow: 0 0 15px gold;
+            }
+
+            100% {
+                text-shadow: 0 0 5px gold;
+            }
+        }
+
+        #title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            /* color: #ff4757; */
+            color: black;
+            animation: floatBlink 2s infinite;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            padding: 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 50px rgba(255,255,255,.15);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;           
+            border-radius: 16px;
+        }
+
+        /* Arrow INSIDE */
+        .arrow-inside {
+            top: -2px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 30px solid black; /* 🔁 SHAPE INVERTED */
+            animation: arrowPulse 1.2s infinite;
+            z-index: 20;
+        }
+
+
+
+        #centerBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle, black, #c0392b);
+            border: 3px solid white;
+            box-shadow: 0 0 25px rgba(255,71,87,.9);
+            cursor: pointer;
+            z-index: 15;
+            /* Center the play icon */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Icon styling */
+            color: white;
+            font-size: 20px;
+        }
+
+        #winnerBox {
+            font-size: 30px;
+            font-weight: 900;
+            opacity: 0;
+            animation: winnerGlow 1.2s infinite;
+            transition: opacity .8s ease;
+            text-align: center;
+        }
+
+        #Name {
+            font-size: 30px;
+            font-weight: 900;
+            opacity: 0;
+            animation: winnerGlow 1.2s infinite;
+            transition: opacity .8s ease;
+            text-align: center;
+        }
+
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.15); /* semi-transparent */
+            backdrop-filter: blur(10px); /* frosted glass blur */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #2c3e50; /* professional dark text */
+        }
+
+        .giver-name {
+            color: #000; /* black */
+            font-weight: 600;
+        }
+
+        .giver-name-bold {
+            color: #000; /* black text */
+            font-weight: 700; /* true bold */
+            font-family: 'Arial Rounded MT', 'Segoe UI', Arial, sans-serif;
+            /* Soft glow for visibility */
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.25), 0 0 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .winner-name {
+            color: var(--winner-color); /* dynamic */
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="page-center">
+        <h1 id="title">🎁 Name Picker 🎁</h1>
+        <br />
+        <div class="wheel-container">
+            <canvas id="wheel" width="400" height="400"></canvas>
+            <div class="arrow-inside"></div>
+            <div id="centerBtn">
+                <i class="fas fa-play"></i>
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            
+            <input type="text" id="UserName" name="UserName"
+                   class="form-control text-center"
+                   placeholder="Enter Your Name"
+                   required minlength="3" maxlength="20"
+                   pattern="[A-Za-z0-9]+" />
+            <div class="mt-3 d-none hideMsg">
+                <span id="msg" class="text-danger"></span>
+            </div>
+        </div>
+        <div id="winnerBox"></div>
+        <div>
+            <span id="Name"></span>
+        </div>
+
+    </div>
+   
+
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+
+                let participants = [];
+                let spinParticipants = []; // 🔥 filtered list
+                let participantsView = [];
+                let giftSponsers = [];
+
+                let angle = 0;
+                let speed = 0;
+                let spinning = false;
+                let winnerIndex = null;
+
+                const canvas = document.getElementById("wheel");
+                const ctx = canvas.getContext("2d");
+
+                const colors = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#9D4EDD"];
+
+                // LOAD DATA
+                $.get("/Dashboard/GetParticipants", d => participantsView = d);
+                $.get("/Dashboard/GetGiftSponsers", d => giftSponsers = d);
+
+                function loadParticipants() {
+                    $.get("/Dashboard/GetParticipantsView", function (data) {
+                        participants = data;
+                        spinParticipants = [...participants]; // reset
+                        winnerIndex = null;
+                    });
+                }
+
+                function drawWheel() {
+                    ctx.clearRect(0, 0, 400, 400);
+
+                    const cx = 200, cy = 200, r = 180;
+
+                    if (spinParticipants.length) {
+                        const slice = (2 * Math.PI) / spinParticipants.length;
+
+                        spinParticipants.forEach((p, i) => {
+                            const isWinner = i === winnerIndex;
+
+                            ctx.beginPath();
+                            ctx.moveTo(cx, cy);
+                            ctx.arc(cx, cy, r, angle + i * slice, angle + (i + 1) * slice);
+                            ctx.fillStyle = colors[i % colors.length];
+                            ctx.fill();
+
+                            ctx.strokeStyle = "#fff";
+                            ctx.stroke();
+
+                            ctx.save();
+                            ctx.translate(cx, cy);
+                            ctx.rotate(angle + i * slice + slice / 2);
+                            ctx.fillStyle = "white";
+                            ctx.font = isWinner ? "bold 16px Arial" : "bold 14px Arial";
+                            ctx.fillText(p.name, 22, 6);
+                            ctx.restore();
+                        });
+                    }
+
+                    angle += speed;
+                    requestAnimationFrame(drawWheel);
+                }
+                function findWinner() {
+
+                const slice = (2 * Math.PI) / spinParticipants.length;
+
+                // Normalize angle
+                let normalizedAngle = angle % (2 * Math.PI);
+                if (normalizedAngle < 0) normalizedAngle += 2 * Math.PI;
+
+                // Arrow is at TOP (12 o'clock)
+                const arrowAngle = (3 * Math.PI) / 2;
+
+                // Calculate index based on arrow
+                winnerIndex = Math.floor(
+                    ((arrowAngle - normalizedAngle + 2 * Math.PI) % (2 * Math.PI)) / slice
+                );
+
+                const winner = spinParticipants[winnerIndex];
+                const winnerColor = colors[winnerIndex % colors.length];
+
+                $("#winnerBox")
+                    .html(`🎉 ${winner.name} 🎉`)
+                    .css({ opacity: 1, color: winnerColor });
+
+                const val = $("#UserName").val();
+
+                        $("#Name")
+                            .html(`<span class="giver-name-bold">${val}</span>
+                                <span class="giver-name">(Gift Sponser) --> </span>
+                                ${winner.name}
+                                <span class="giver-name"> ( Gift Picker)</span>`)
+                            .css({ opacity: 1 , color: winnerColor});
+
+
+                confetti({ particleCount: 200, spread: 120, origin: { y: 0.3 } });
+
+                // Backend logic (unchanged)
+                $.post("/Dashboard/DeleteParticipantView", { Id: winner.id });
+                AddSponsers(val, winner.name);
+
+               // loadParticipants();
+                $("#centerBtn").hide();
+            }
+              
+
+                function AddSponsers(value1, value2) {
+                    $.post("/Dashboard/AddSponsers", { sponser: value1, picker: value2 });
+                }
+
+                $("#centerBtn").click(function () {
+
+                    if (!participantsView.length) {
+                        $(".hideMsg").removeClass("d-none");
+                        $("#msg").text("Participants are still loading...");
+                        return;
+                    }
+
+                    let val = $("#UserName").val().trim();
+                    if (!val) {
+                        $(".hideMsg").removeClass("d-none");
+                        $("#msg").text("Kindly Enter Your Name To Play").stop(true, true)
+                        .fadeIn(200)
+                        .delay(4000)   // stays for 3 seconds
+                        .fadeOut(600);;;
+                        return;
+                    }
+
+                    const exists = participantsView.some(p =>
+                        p.name && p.name.toLowerCase() === val.toLowerCase()
+                    );
+
+                    const sponserExists = giftSponsers.some(x =>
+                        x.sponser && x.sponser.toLowerCase() === val.toLowerCase()
+                    );
+
+                    if (!exists) {
+                        $(".hideMsg").removeClass("d-none");
+                        $("#msg").text("Name not found in participants list").stop(true, true)
+                        .fadeIn(200)
+                        .delay(4000)   // stays for 3 seconds
+                        .fadeOut(600);;;
+                        return;
+                    }
+
+                    if (sponserExists) {
+                        $(".hideMsg").removeClass("d-none");
+                        $("#msg").text("Already Participated in The Game").stop(true, true)
+                        .fadeIn(200)
+                        .delay(4000)   // stays for 3 seconds
+                        .fadeOut(600);
+                        return;
+                    }
+
+                  // if(Participants.length==1)
+                  // {
+                  //      $("#Name").html(`Gift Picker : 🎉 ${participants[0].name} 🎉`).css({
+                  //       opacity: 1,
+                  //       color: winnerColor
+                  //   });
+                  //   $("#Name").text(`${val} is the secret santa for ${participants[0].name}`);
+                  //   $("#centerBtn").hide();
+                  //   return;
+                  // }
+
+                    // 🔥 REMOVE ENTERED NAME FROM SPIN LIST
+                    spinParticipants = participants.filter(p =>
+                        p.name.toLowerCase() !== val.toLowerCase()
+                    );
+
+                    if (!spinParticipants.length) {
+                        $(".hideMsg").removeClass("d-none");
+                        $("#msg").text("No valid participants left to spin");
+                        return;
+                    }
+
+                    $(".hideMsg").addClass("d-none");
+                    $("#UserName").prop("disabled", true);
+
+                    if (spinning) return;
+
+                    winnerIndex = null;
+                    spinning = true;
+                    speed = 0.45;
+
+                    setTimeout(() => {
+                        const slow = setInterval(() => {
+                            speed -= 0.012;
+                            if (speed <= 0) {
+                                clearInterval(slow);
+                                speed = 0;
+                                spinning = false;
+                                findWinner();
+                            }
+                        }, 80);
+                    }, Math.random() * 2000 + 2000);
+                });
+
+                loadParticipants();
+                drawWheel();
+            });
+        </script>
+    }
+
+</body>
+</html>

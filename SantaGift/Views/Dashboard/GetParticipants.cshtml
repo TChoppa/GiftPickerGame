@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "ParticipantList";
+}
+
+<h1>UsersList</h1>
+
+@model IEnumerable<SantaGift.Models.Participants>
+
+@{
+    ViewData["Title"] = "Paricipant List";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<div class="container mt-5">
+    <h2>Participants</h2>
+    <table id="usersTable" class="display table table-striped">
+        <thead>
+            <tr>
+                <th>UserName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#usersTable').Datatable();
+        });
+    </script>
+}
+
+

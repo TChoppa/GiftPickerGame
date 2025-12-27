@@ -1,0 +1,589 @@
+﻿
+@{
+    ViewData["Title"] = "_Registe_Login";
+}
+
+<div class="gift-picker-wrapper">
+    <h1 class="play-text">
+        <span class="text-primary">GIFT PICKER</span>
+    </h1>
+</div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0 text-center text-black-50">SIGN-IN</h4>
+                </div>
+                <div class="card-body">
+                    <form id="registerForm">
+                        <div class="form-group mb-3">
+                            <label for="UserName" class="text-black-50">USERNAME</label>
+                            <input type="text" id="UserName" name="UserName"
+                                   class="form-control text-black"
+                                   required minlength="3" maxlength="20"
+                                   pattern="[A-Za-z0-9]+" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="Password" class="text-black-50">PASSWORD</label>
+                            <input type="password" id="AdminPassword" name="Password"
+                                   class="form-control text-black"
+                                   required minlength="6" />
+                        </div>
+                        <div class="form-group mb-3 d-none" id="userPasswordHide">
+                            <label for="Password" class="text-black-50">USER PASSWORD</label>
+                            <input type="password" id="UserPassword" name="Password"
+                                   class="form-control text-black"
+                                    minlength="6" />
+                        </div>
+                        <div class="mt-3">
+                            <span id="msg" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex justify-content-center" id="loginHide">                          
+                            <button type="submit" id="btnLogin" class="btn btn-info">Login</button>
+                        </div>
+                        <div class="d-flex justify-content-center d-none" id="registerHide">
+                            <button type="button" id="btnRegister" class="btn btn-info">Register</button>
+                        </div>
+
+                        <br />
+                        <div class="d-flex justify-content-center" id="promptRegister">
+                            Kindly Register your deatils 
+                            <a  href ="#" id="btnRegisterHide"> Register</a>
+                        </div>
+                        <div class="d-flex justify-content-center d-none" id="promptLogin">
+                            Kindly Login with your Registered deatils
+                            <a href="#" id="btnLoginHide"> Login</a>
+                        </div>
+                    </form> 
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+                  $("#btnRegisterHide").click(function () {
+            $("#UserName").val("");
+            $("#AdminPassword").val("");
+            $("#UserPassword").val("");
+
+            $("#userPasswordHide").removeClass("d-none"); // SHOW
+            $("#msg").text("");
+
+            $("#loginHide").addClass("d-none");
+            $("#registerHide").removeClass("d-none");
+            $("#promptLogin").removeClass("d-none");
+            $("#promptRegister").addClass("d-none");
+        });
+
+
+                   $("#btnLoginHide").click(function () {
+            $("#UserName").val("");
+            $("#AdminPassword").val("");
+            $("#UserPassword").val("");
+
+            $("#userPasswordHide").addClass("d-none"); // HIDE
+            $("#msg").text("");
+
+            $("#loginHide").removeClass("d-none");
+            $("#registerHide").addClass("d-none");
+            $("#promptRegister").removeClass("d-none");
+            $("#promptLogin").addClass("d-none");
+        });
+
+
+
+            // Register
+            $("#btnRegister").click(function () {
+                debugger;
+                         
+               var form = document.getElementById("registerForm");
+               if (!form.checkValidity()) {
+               form.reportValidity(); // show browser validation messages
+            return;
+        }
+               // $("#userPasswordHide").removeClass("d-none");
+                $.ajax({
+                    url: "/SantaHome/Register",
+                    type: "POST",
+                    data: {
+                        UserName: $("#UserName").val(),
+                        Password: $("#AdminPassword").val(),
+                        UserPassword : $("#UserPassword").val()
+                    },
+                    success: function (response) {
+                        debugger;
+                         
+                        if (response.success) {
+                            $("#UserName").val("")
+                         $("#AdminPassword").val("")
+                          $("#UserPassword").val("")
+                            alert(response.message);
+                        } else {
+                                 $("#msg")
+                                .removeClass("text-success")
+                                .addClass("text-danger")
+                                .text(response.message)
+                                .stop(true, true)
+                                .fadeIn(200)
+                                .delay(5000)
+                                .fadeOut(600);
+
+                        }
+                    },
+                    error: function () {
+                        alert("Error during registration.");
+                    }
+                });
+            });
+
+            // Login
+            $("#btnLogin").click(function (event) {
+                event.preventDefault();
+               var form = document.getElementById("registerForm");
+               if (!form.checkValidity())
+               {
+                form.reportValidity(); // show browser validation messages
+                return;
+                }
+               
+
+                $.ajax({
+                    url: "/SantaHome/Login",
+                    type: "POST",
+                    data: {
+                        UserName: $("#UserName").val(),
+                        Password: $("#AdminPassword").val() ,
+                        UserPassword : $("#UserPassword").val()
+                    },
+                    success: function (response) {                
+                        if (response.success) {                      
+                           alert(response.message);
+                            window.location.href = response.redirectUrl; // Redirect to dashboard
+                        } else {
+                            $("#msg").text(response.message) .stop(true, true)
+                        .fadeIn(200)
+                        .delay(4000)   // stays for 3 seconds
+                        .fadeOut(600);
+                           // alert(response.message); // Invalid credentials
+                        }
+                         
+                    },
+                    error: function () {
+                        alert("Error during login.");
+                    }
+                });
+            });
+        });
+    </script>
+}
+<style>
+    /* =====================================================
+       BACKGROUND – SOFT COLOR BLOBS (GLASS FRIENDLY)
+       ===================================================== */
+    body {
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        color: #1f2937;
+        background: radial-gradient(circle at 20% 20%, rgba(186, 230, 253, 0.45), transparent 40%), radial-gradient(circle at 80% 30%, rgba(199, 210, 254, 0.45), transparent 50%), radial-gradient(circle at 60% 80%, rgba(254, 215, 170, 0.35), transparent 50%), linear-gradient(135deg, #f8fafc, #eef2f7, #f1f5f9);
+        background-attachment: fixed;
+    }
+    /* Center GIFT PICKER perfectly on the page line */
+    .gift-picker-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center; /* horizontal center */
+        align-items: center;
+        margin-top: 40px; /* spacing from top */
+    }
+
+        /* Shine layer */
+    .play-text::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient( 120deg, transparent 20%, rgba(255,255,255,0.85), transparent 80% );
+            mix-blend-mode: overlay; /* keeps original colors */
+            opacity: 0.65;
+            pointer-events: none;
+            animation: playTextShine 4s ease-in-out infinite;
+        }
+
+    .play-text {
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        display: inline-block;
+        overflow: hidden; /* required for shine */
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        padding: 16px 30px;
+        border-radius: 16px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 2rem;
+        font-weight: 600;
+        position: relative;
+        color: #fff;
+        transition: all 0.35s ease;
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        border: 1px solid rgba(255,255,255,0.28);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.45), inset 0 0 18px rgba(255,255,255,0.25);
+    }
+
+    @@keyframes playTextShine {
+        0% {
+            transform: translateX(-120%);
+        }
+
+        45% {
+            transform: translateX(120%);
+        }
+
+        100% {
+            transform: translateX(120%);
+        }
+    }
+
+    .play-text span {
+        text-shadow: 0 0 5px currentColor, 0 0 15px currentColor;
+    }
+    /* =====================================================
+       GLASS CARD – TRUE GLASSMORPHISM
+       ===================================================== */
+    .card {
+        position: relative;
+        background: rgba(255,255,255,0.12) !important; /* REAL GLASS */
+        backdrop-filter: blur(30px) saturate(180%);
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,0.28);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 0 30px rgba(255,255,255,0.18);
+    }
+
+
+        /* ===== GLASS SHINE LAYER (THIS MAKES IT PREMIUM) ===== */
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient( 120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.05) 35%, rgba(255,255,255,0.02) );
+            pointer-events: none;
+        }
+
+
+    /* =====================================================
+       CARD HEADER – DARK GLASS STRIP
+       ===================================================== */
+    .card-header {
+        background: rgba(255,255,255,0.18) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(255,255,255,0.25);
+        border-radius: 22px 22px 0 0;
+    }
+
+
+    /* =====================================================
+       TEXT
+       ===================================================== */
+    h1 {
+        color: #dbeafe;
+        font-weight: 600;
+    }
+
+    h4 {
+        color: #ffffff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    label {
+        color: rgba(255,255,255,0.85);
+        font-weight: 500;
+    }
+
+
+    /* =====================================================
+       INPUTS – FROSTED GLASS
+       ===================================================== */
+    .form-control {
+        background: rgba(255,255,255,0.18);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.35);
+        border-radius: 10px;
+        color: #ffffff;
+    }
+
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.55);
+        }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.22);
+            border-color: rgba(130,170,255,0.85);
+            box-shadow: 0 0 0 0.15rem rgba(130,170,255,0.45);
+            color: #ffffff;
+        }
+
+
+    /* =====================================================
+       BUTTON – GLASS GLOW
+       ===================================================== */
+    .btn-info {
+        background: linear-gradient( 135deg, rgba(120,150,255,0.9), rgba(80,120,255,0.9) );
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 18px 40px rgba(90,120,255,0.55), inset 0 0 18px rgba(255,255,255,0.35);
+    }
+
+        .btn-info:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 22px 55px rgba(90,120,255,0.65), inset 0 0 22px rgba(255,255,255,0.45);
+        }
+
+
+    /* =====================================================
+       LINKS
+       ===================================================== */
+    a {
+        color: #93c5fd;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+
+    /* =====================================================
+       CONTAINER SPACING
+       ===================================================== */
+    .container {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+</style>
+@* <style>
+    /* =====================================================
+       GLOBAL LIGHT GLASS BACKGROUND
+       ===================================================== */
+    body {
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, rgba(180,210,255,0.55), transparent 40%), radial-gradient(circle at bottom right, rgba(210,230,255,0.45), transparent 45%), linear-gradient(135deg, #eef4ff, #f5f9ff, #ffffff);
+        background-attachment: fixed;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+
+    /* =====================================================
+       MAIN CARD – BIG, GLOSSY GLASS
+       ===================================================== */
+    .card {
+        background: linear-gradient( 135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.55) ) !important;
+        backdrop-filter: blur(26px);
+        -webkit-backdrop-filter: blur(26px);
+        border-radius: 22px;
+        border: 1px solid rgba(200,220,255,0.65);
+        box-shadow: 0 35px 80px rgba(90,130,200,0.30), inset 0 0 45px rgba(255,255,255,0.65);
+        padding-bottom: 10px;
+    }
+
+
+    /* =====================================================
+       CARD HEADER – GLASS BLUE STRIP
+       ===================================================== */
+    .card-header {
+        background: linear-gradient( 135deg, rgba(120,170,255,0.85), rgba(90,140,255,0.75) ) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255,255,255,0.45);
+        border-radius: 22px 22px 0 0;
+    }
+
+
+    /* =====================================================
+       HEADINGS & TEXT
+       ===================================================== */
+    h1 {
+        color: #1f3c88;
+        font-weight: 600;
+        text-shadow: 0 2px 8px rgba(120,160,255,0.35);
+    }
+
+    h4 {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    label {
+        color: #1f2d3d;
+        font-weight: 500;
+    }
+
+
+    /* =====================================================
+       FORM INPUTS – SOFT GLASS
+       ===================================================== */
+    .form-control {
+        background: rgba(255,255,255,0.55);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(180,205,230,0.75);
+        border-radius: 10px;
+        color: #1f2d3d;
+    }
+
+        .form-control::placeholder {
+            color: rgba(40,60,90,0.55);
+        }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.75);
+            border-color: #6ea8fe;
+            box-shadow: 0 0 0 0.15rem rgba(110,168,254,0.45);
+            color: #1f2d3d;
+        }
+
+
+    /* =====================================================
+       BUTTON – GLOSSY GLASS BLUE
+       ===================================================== */
+    .btn-info {
+        background: linear-gradient( 135deg, rgba(90,140,255,0.9), rgba(13,110,253,0.9) );
+        border: none;
+        border-radius: 12px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        box-shadow: 0 15px 35px rgba(13,110,253,0.45), inset 0 0 12px rgba(255,255,255,0.45);
+        padding: 10px 28px;
+        font-weight: 500;
+    }
+
+        .btn-info:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 45px rgba(13,110,253,0.55), inset 0 0 14px rgba(255,255,255,0.55);
+        }
+
+
+    /* =====================================================
+       MESSAGE TEXT
+       ===================================================== */
+    #msg {
+        font-weight: 500;
+    }
+
+
+    /* =====================================================
+       LINKS – SOFT BLUE
+       ===================================================== */
+    a {
+        color: #3b82f6;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+
+    /* =====================================================
+       CONTAINER SPACING ENHANCEMENT
+       ===================================================== */
+    .container {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
+</style> *@
+@* <style>
+    /* FULL PAGE GLASS BACKGROUND */
+    body {
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, rgba(13,110,253,0.35), transparent 40%), radial-gradient(circle at bottom right, rgba(13,110,253,0.25), transparent 40%), linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        background-attachment: fixed;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* GLASS CARD */
+    .card {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 60px rgba(13, 110, 253, 0.25); /* Header color reflection */
+    }
+
+    /* CARD HEADER GLASS + COLOR REFLECTION */
+    .card-header {
+        background: rgba(13, 110, 253, 0.6) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 16px 16px 0 0;
+    }
+
+    /* FORM INPUT GLASS */
+    .form-control {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: #fff;
+        backdrop-filter: blur(6px);
+    }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.45);
+            color: #fff;
+        }
+
+    /* LABELS & TEXT */
+    label, h1, h4 {
+        color: #ffffff;
+    }
+
+    /* BUTTON GLASS */
+    .btn-info {
+        background: rgba(13, 110, 253, 0.75);
+        border: none;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 0 15px rgba(13, 110, 253, 0.6);
+    }
+
+        .btn-info:hover {
+            background: rgba(13, 110, 253, 0.9);
+        }
+
+    /* LINKS */
+    a {
+        color: #aad4ff;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+</style> *@
+

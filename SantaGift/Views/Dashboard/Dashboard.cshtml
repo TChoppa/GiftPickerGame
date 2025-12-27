@@ -1,0 +1,260 @@
+﻿@model IEnumerable<SantaGift.Models.Participants>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        /* ================= BACKGROUND ================= */
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #1f2937;
+            background: radial-gradient(circle at 20% 20%, rgba(186, 230, 253, 0.45), transparent 45%), radial-gradient(circle at 80% 30%, rgba(199, 210, 254, 0.45), transparent 50%), radial-gradient(circle at 60% 80%, rgba(254, 215, 170, 0.35), transparent 50%), linear-gradient(135deg, #f8fafc, #eef2f7, #f1f5f9);
+            background-attachment: fixed;
+        }
+
+
+
+
+        /* ================= GLASS CORE ================= */
+        .glass {
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45), inset 0 0 25px rgba(255,255,255,0.22);
+            position: relative;
+            border-radius: 22px;
+        }
+
+            .glass::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: linear-gradient(120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.08) 35%, rgba(255,255,255,0.02));
+                pointer-events: none;
+            }
+
+        /* ================= BUTTON GLOW ================= */
+        .glow-btn {
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.28);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 14px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 14px 35px rgba(0,0,0,0.35), inset 0 0 14px rgba(255,255,255,0.2);
+            transition: all 0.35s ease;
+        }
+
+            .glow-btn:hover {
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 0 20px rgba(100,180,255,0.8), 0 18px 55px rgba(0,0,0,0.5);
+            }
+
+        /* ================= MODAL ================= */
+        .modal-content {
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.1), inset 0 0 30px rgba(255,255,255,0.22);
+        }
+
+            .modal-content::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: linear-gradient(120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.05) 35%, rgba(255,255,255,0.02));
+                pointer-events: none;
+            }
+
+        /* ================= TABLE ================= */
+        #modalUsersTable {
+            width: 100%;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+            #modalUsersTable thead th {
+                color: black;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            #modalUsersTable tbody tr:hover {
+                background: rgba(255,255,255,0.15);
+            }
+
+            #modalUsersTable td {
+                color: black;
+                vertical-align: middle;
+            }
+
+        /* ================= MESSAGES ================= */
+        #msgError, #msgSuccess {
+            display: block;
+            margin-top: 8px;
+            font-weight: 600;
+            
+        }
+        #msgError{
+            color: #ff4d4d; /* keep Bootstrap danger color */
+            font-weight: 600;
+            /* Neon glow */
+            text-shadow: 0 0 4px rgba(255, 77, 77, 0.9), 0 0 10px rgba(255, 77, 77, 0.7), 0 0 18px rgba(255, 77, 77, 0.55);
+        }
+        #msgSuccess{
+            color: #00e68a; /* slightly softer green */
+            font-weight: 600;
+            /* Soft neon glow (reduced intensity) */
+            text-shadow: 0 0 2px rgba(0, 255, 153, 0.6), 0 0 6px rgba(0, 255, 153, 0.4);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: center; /* centers horizontally */
+            align-items: center; /* centers vertically */
+            position: relative; /* keep button positioning intact */
+            border-bottom: 1px solid rgba(255,255,255,0.25);
+        }
+            /* Move the close button to the right without affecting the centering */
+            .modal-header .btn-close {
+                position: absolute;
+                right: 15px;
+            }
+
+    </style>
+</head>
+
+<body>
+    <div>
+
+    </div>
+    <h2 class="text-center mt-4 "></h2>
+    <br /><Br />
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="col-md-5 glass p-4">
+
+            <h4 class="text-center text-info mb-4">ADD PARTICIPANT</h4>
+
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label class="form-label">Participant</label>
+                    <input type="text" id="Name" class="form-control" required minlength="3" maxlength="20" />
+                </div>
+
+                <span id="msgError" class="text-danger"></span>
+                <span id="msgSuccess" class="text-success"></span>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="@Url.Action("PlayGame", "PlayGame")" class="glow-btn text-black">Back</a>
+                    <button id="btnSave" class="glow-btn" style="color:deepskyblue">Save</button>
+                    <a href="#" id="listParticipants" class="glow-btn text-warning">View</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="participantsModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg rounded-4">
+
+                <div class="modal-header">
+                    <h5 class="modal-title text-warning">PARTICIPANTS</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-hover" id="modalUsersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <div id="playMessage" class="text-center text-danger"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function GetParticipants() {
+            $("#modalUsersTable tbody").empty();
+
+            $.get("/Dashboard/GetParticipants", function (response) {
+                if (response.success === false) {
+                    $("#playMessage").text(response.message);
+                    return;
+                }
+
+                $.each(response, function (i, user) {
+                    $("#modalUsersTable tbody").append(`
+                        <tr data-id="${user.id}">
+                            <td>${user.name}</td>
+                            <td><button class="btn btn-sm btn-outline-primary editBtn"><i class="fas fa-edit"></i></button></td>
+                            <td><button class="btn btn-sm btn-outline-danger deleteBtn"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `);
+                });
+            });
+        }
+
+        $("#listParticipants").click(function (e) {
+            e.preventDefault();
+            new bootstrap.Modal("#participantsModal").show();
+            GetParticipants();
+        });
+
+        $("#btnSave").click(function (e) {
+            e.preventDefault();
+            if (!registerForm.checkValidity()) {
+                registerForm.reportValidity();
+                return;
+            }
+
+            $.post("/Dashboard/AddParticipant", { name: $("#Name").val() }, function (res) {
+                if (res.success) {
+                    $("#msgSuccess").text(res.message).fadeIn().delay(2000).fadeOut();
+                    $("#Name").val("");
+                } else {
+                    $("#msgError").text(res.message).fadeIn().delay(2000).fadeOut();
+                }
+            });
+        });
+
+        $("#modalUsersTable").on("click", ".deleteBtn", function () {
+            let row = $(this).closest("tr");
+            $.post("/Dashboard/DeleteParticipant", { id: row.data("id") }, function (res) {
+                if (res.success) row.remove();
+            });
+        });
+    </script>
+
+</body>
+</html>
