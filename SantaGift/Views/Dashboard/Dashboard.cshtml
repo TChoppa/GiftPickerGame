@@ -250,10 +250,64 @@
 
         $("#modalUsersTable").on("click", ".deleteBtn", function () {
             let row = $(this).closest("tr");
+            var currentName = row.find("td:first").text();
             $.post("/Dashboard/DeleteParticipant", { id: row.data("id") }, function (res) {
+                if (res.success) row.remove();          
+            });
+             $.post("/Dashboard/DeleteParticipantViews", { name: currentName }, function (res) {
                 if (res.success) row.remove();
             });
         });
+         $("#modalUsersTable").on("click", ".editBtn", function () {
+            var row = $(this).closest("tr");
+            var TableId = row.data("id");
+            var currentName = row.find("td:first").text();
+
+            // Replace cell text with input
+            var input = $("<input type='text' class='form-control form-control-sm' style='width:150px; margin-right:160px;' />")
+            .val(currentName);
+
+            var wrapper = $("<div></div>").css({
+                display: "flex",
+                justifyContent: "flex-end", // align to right
+                width: "100%"
+            }).append(input);
+
+            row.find("td:first").html(wrapper);
+            input.focus();
+
+
+            // On blur, save automatically
+            input.on("blur", function () {
+                var newName = $(this).val();
+
+                $.ajax({
+                    url: "/Dashboard/EditParticipant",
+                    type: "POST",
+                    data: { id: TableId, name: newName },
+                    success: function (response) {
+                        if (response.success) {
+                            // Replace input with updated text
+                            row.find("td:first").text(newName);
+                        } else {
+                            alert(response.message);
+                            // revert back to old name if failed
+                            row.find("td:first").text(currentName);
+                        }
+                    },
+                    error: function () {
+                        alert("Error updating participant.");
+                        row.find("td:first").text(currentName);
+                    }
+                });
+
+                 $.post("/Dashboard/EditParticipantView", { name: newName , oldName:currentName }, function (res) {
+                if (res.success){};
+            });
+                
+            });
+        });
+
     </script>
 
 </body>

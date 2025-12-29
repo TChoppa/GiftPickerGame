@@ -158,7 +158,7 @@
             min-width: 120px;
             min-height: 120px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.16);
+            background: rgba(70, 130, 180, 1);
             backdrop-filter: blur(26px) saturate(160%);
             -webkit-backdrop-filter: blur(26px) saturate(160%);
             border: 1px solid rgba(255,255,255,0.35);
@@ -419,7 +419,7 @@
     <script>
 
          $(document).ready(function () {
-             debugger;
+         
         var isUser = "@(Context.Session.GetString("isUser") ?? "false")".toLowerCase(); 
         if (isUser === "true") 
         { 
@@ -492,7 +492,7 @@
          });
 
          $("#modalUsersTable").on("click", ".deleteBtn", function () {
-            debugger;
+           
             let row = $(this).closest("tr");
             let id = row.data("id");
              let delName = row.find("td:first").text().trim();
@@ -513,7 +513,7 @@
          {
               $.get("/Dashboard/GetParticipantsView", function (response)
             {
-                debugger;
+               
                  if (response && response.length == 0)
                  {
                      $("#playMessage").text("Game has been Completed").addClass("show");
@@ -527,8 +527,14 @@
 
             // First call: GetParticipantsView
             $.get("/Dashboard/GetParticipantsView", function (responseView) {
-                debugger;
+           
                 if (responseView && responseView.length === 0) {
+                   var isUserCheck = "@(Context.Session.GetString("isUser") ?? "false")".toLowerCase();
+                   if (isUserCheck === "false")
+                    {
+                         $("#playMessage").text("Kindly create your team to play.").addClass("show");
+                         return;
+                    }
                     $("#playMessage").show();
                     $("#playMessage").text("Game has been Completed").addClass("show");
                     return; // stop here if game is completed
