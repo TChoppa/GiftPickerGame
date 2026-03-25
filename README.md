@@ -56,8 +56,9 @@ GiftPicker solves these challenges by:
 ## 🧰 Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript  
-- **Backend:** (Add if used – e.g., ASP.NET / Node.js)  
-- **Architecture:** Lightweight client-side logic  
+- **Backend:** ASP.NET MVC / ASP.NET Core  
+- **Database:** SQL Server (MDF - Local DB)  
+- **Architecture:** MVC Pattern  
 
 ---
 
@@ -68,11 +69,3 @@ GiftPicker solves these challenges by:
 3. System assigns gift receivers randomly  
 4. Display results  
 
----
-
-## 📸 Screenshots
-_Add your screenshots here_
-
-```md
-![Home](./screenshots/home.png)
-![Result](./screenshots/result.png)
